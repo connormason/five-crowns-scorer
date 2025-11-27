@@ -4,38 +4,107 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a single-file web application for scoring the card game "Five Crowns". The entire application is contained in `scorer.html` - a self-contained HTML file with embedded CSS and JavaScript.
+This is a production-ready web application for scoring the card game "Five Crowns". The application has been refactored from a single-file prototype into a modular, maintainable codebase suitable for GitHub Pages deployment.
 
 ## Architecture
 
-**Single-File Structure**: All code (HTML, CSS, JavaScript) is in `scorer.html`:
-- Lines 1-274: HTML structure and CSS styling
-- Lines 275-315: HTML layout (setup section, game section with scoreboard)
-- Lines 317-541: JavaScript application logic
+**Modular Structure**: The application follows a clean separation of concerns:
 
-**Game Logic**:
+```
+five-crowns-scorer/
+├── index.html          # Main HTML structure
+├── css/
+│   └── styles.css     # All styling
+├── js/
+│   ├── app.js         # Application entry point and event handlers
+│   ├── game.js        # Game state management (Game class)
+│   ├── ui.js          # UI rendering (UI class)
+│   └── storage.js     # localStorage persistence (Storage module)
+└── scorer.html        # Legacy single-file version (for reference)
+```
+
+**Game Logic** (js/game.js):
 - Five Crowns has 11 rounds (3-13 cards per round)
 - Players accumulate points across rounds (lower is better)
-- State management uses three global variables:
+- `Game` class manages all state:
   - `players`: Array of player names
   - `scores`: 2D array (players × rounds) of score values
   - `currentRound`: Current round number (1-11)
+- Methods: `addPlayer()`, `removePlayer()`, `submitRound()`, `undoLastRound()`, etc.
+- State persistence via `saveState()` and `loadState()`
 
-**Key Functions**:
-- `addPlayer()` / `removePlayer()`: Manage player roster during setup
-- `startGame()`: Initialize score arrays and transition to game view
-- `submitRound()`: Validate and record scores for current round
-- `undoLastRound()`: Revert the most recent round
-- `updateScoreTable()`: Render the full scoreboard with totals
-- `announceWinner()`: Determine and display winner when game completes
+**UI Management** (js/ui.js):
+- `UI` class handles all DOM manipulation
+- Methods: `updateScoreTable()`, `updateScoreInputs()`, `updatePlayerList()`, etc.
+- XSS protection through HTML escaping
+- Separation of rendering logic from game logic
+
+**Data Persistence** (js/storage.js):
+- `Storage` module provides localStorage interface
+- Methods: `save()`, `load()`, `clear()`, `hasSavedGame()`
+- Automatic game state persistence
+- Users can continue interrupted games
+
+**Application Entry** (js/app.js):
+- `FiveCrownsApp` class coordinates everything
+- Event delegation for dynamic elements
+- Handles user interactions and error messages
+- Checks for saved games on startup
 
 ## Development
 
 **Running the Application**:
-Simply open `scorer.html` in any web browser. No build process or dependencies required.
+Open `index.html` in any modern web browser with ES6 module support. No build process or dependencies required.
 
 **Testing Changes**:
-After editing, refresh the browser to see changes. No compilation or bundling needed.
+1. Edit the appropriate module (game.js, ui.js, storage.js, or app.js)
+2. Refresh the browser to see changes
+3. Use browser DevTools to debug
+4. Test on multiple browsers and devices
 
 **State Management**:
-All game state is in-memory only. Refreshing the browser will lose all game data. The application intentionally does not persist data to localStorage or any backend.
+Game state is automatically saved to localStorage after each action. Users can close/refresh the browser and continue their game.
+
+## Key Classes and Methods
+
+**Game Class** (js/game.js):
+- `startNewGame(playerNames)`: Initialize new game
+- `addPlayer(name)` / `removePlayer(index)`: Player management
+- `submitRound(roundScores)`: Record scores and advance
+- `undoLastRound()`: Revert last round
+- `getWinner()`: Determine winner when complete
+- `saveState()` / `loadState()`: Persistence
+- `exportState()`: Get game state as JSON
+
+**UI Class** (js/ui.js):
+- `showSetup()` / `showGame()`: View transitions
+- `updateScoreTable()`: Render scoreboard
+- `updateScoreInputs()`: Render input fields
+- `updatePlayerList()`: Render player roster
+- `announceWinner(winner)`: Display winner
+- `getScoreInputs()`: Collect scores from form
+
+**Storage Module** (js/storage.js):
+- `save(gameState)`: Save to localStorage
+- `load()`: Load from localStorage
+- `clear()`: Remove saved data
+- `hasSavedGame()`: Check for existing save
+
+## Extensibility
+
+The modular architecture makes it easy to:
+- Add new game features (modify Game class)
+- Customize UI/styling (edit styles.css or UI class)
+- Add export formats (extend Storage module)
+- Implement game history or statistics
+- Add multiplayer or sharing features
+
+## GitHub Pages Deployment
+
+The application is configured for GitHub Pages:
+1. All assets use relative paths
+2. No build process required
+3. ES6 modules work natively
+4. Simply push to main branch to deploy
+
+**Configuration**: Repository Settings → Pages → Source: main branch / (root)
