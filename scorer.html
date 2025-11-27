@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Five Crowns Scorer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 1rem;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .round-info {
+            text-align: center;
+            font-size: 1.1rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        .setup {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .setup h2 {
+            margin-bottom: 1rem;
+            color: #667eea;
+        }
+
+        .player-setup {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .player-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .player-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            background: #f5f5f5;
+            border-radius: 0.5rem;
+        }
+
+        .scoreboard {
+            background: white;
+            border-radius: 1rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            text-align: center;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+
+        td {
+            font-size: 1rem;
+        }
+
+        .player-name {
+            text-align: left;
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .total-col {
+            background: #f0f0f0;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .winner {
+            background: #d1fae5;
+        }
+
+        .score-input {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .score-input h3 {
+            margin-bottom: 1rem;
+            color: #667eea;
+        }
+
+        .score-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .score-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .score-item label {
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #555;
+        }
+
+        input[type="number"] {
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 0.5rem;
+            font-size: 1.1rem;
+            text-align: center;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .controls {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .controls button {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 0.5rem;
+            }
+
+            .header, .setup, .scoreboard, .score-input {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            th, td {
+                padding: 0.5rem;
+                font-size: 0.9rem;
+            }
+
+            button {
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🃏 Five Crowns Scorer</h1>
+            <div class="round-info" id="roundInfo">Setup Game</div>
+        </div>
+
+        <div id="setupSection" class="setup">
+            <h2>Add Players</h2>
+            <div class="player-setup">
+                <input type="text" id="playerNameInput" placeholder="Enter player name" />
+                <button class="btn-primary" onclick="addPlayer()">Add</button>
+            </div>
+            <div class="player-list" id="playerList"></div>
+            <button class="btn-success" onclick="startGame()" style="width: 100%; margin-top: 1rem;">Start Game</button>
+        </div>
+
+        <div id="gameSection" class="hidden">
+            <div class="scoreboard">
+                <table id="scoreTable">
+                    <thead>
+                        <tr>
+                            <th>Player</th>
+                        </tr>
+                    </thead>
+                    <tbody id="scoreTableBody">
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="score-input">
+                <h3>Round <span id="currentRound">1</span> Scores</h3>
+                <div class="score-grid" id="scoreInputs"></div>
+                <div class="controls">
+                    <button class="btn-primary" onclick="submitRound()">Submit Round</button>
+                    <button class="btn-secondary" onclick="undoLastRound()">Undo Last</button>
+                    <button class="btn-danger" onclick="resetGame()">New Game</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let players = [];
+        let scores = [];
+        let currentRound = 1;
+        const maxRounds = 11;
+        const roundCards = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
+
+        function addPlayer() {
+            const input = document.getElementById('playerNameInput');
+            const name = input.value.trim();
+            
+            if (name === '') {
+                alert('Please enter a player name');
+                return;
+            }
+            
+            if (players.includes(name)) {
+                alert('Player already exists');
+                return;
+            }
+            
+            players.push(name);
+            input.value = '';
+            updatePlayerList();
+        }
+
+        function removePlayer(index) {
+            players.splice(index, 1);
+            updatePlayerList();
+        }
+
+        function updatePlayerList() {
+            const list = document.getElementById('playerList');
+            if (players.length === 0) {
+                list.innerHTML = '<p style="color: #999; text-align: center;">No players added yet</p>';
+                return;
+            }
+            
+            list.innerHTML = players.map((name, index) => `
+                <div class="player-item">
+                    <span>${name}</span>
+                    <button class="btn-danger" onclick="removePlayer(${index})">Remove</button>
+                </div>
+            `).join('');
+        }
+
+        function startGame() {
+            if (players.length < 2) {
+                alert('Please add at least 2 players');
+                return;
+            }
+            
+            // Initialize scores
+            scores = players.map(() => new Array(maxRounds).fill(null));
+            currentRound = 1;
+            
+            document.getElementById('setupSection').classList.add('hidden');
+            document.getElementById('gameSection').classList.remove('hidden');
+            
+            updateScoreTable();
+            updateScoreInputs();
+            updateRoundInfo();
+        }
+
+        function updateRoundInfo() {
+            const cards = roundCards[currentRound - 1];
+            document.getElementById('roundInfo').textContent = 
+                `Round ${currentRound} of ${maxRounds} - ${cards} cards each`;
+            document.getElementById('currentRound').textContent = currentRound;
+        }
+
+        function updateScoreTable() {
+            const table = document.getElementById('scoreTable');
+            const thead = table.querySelector('thead tr');
+            const tbody = document.getElementById('scoreTableBody');
+            
+            // Update header
+            thead.innerHTML = '<th>Player</th>';
+            for (let i = 1; i <= maxRounds; i++) {
+                thead.innerHTML += `<th>R${i}</th>`;
+            }
+            thead.innerHTML += '<th>Total</th>';
+            
+            // Update body
+            tbody.innerHTML = players.map((player, playerIndex) => {
+                const total = scores[playerIndex].reduce((sum, score) => 
+                    sum + (score !== null ? score : 0), 0);
+                
+                const isWinner = currentRound > maxRounds && 
+                    total === Math.min(...players.map((_, i) => 
+                        scores[i].reduce((s, sc) => s + (sc !== null ? sc : 0), 0)
+                    ));
+                
+                return `
+                    <tr ${isWinner ? 'class="winner"' : ''}>
+                        <td class="player-name">${player}</td>
+                        ${scores[playerIndex].map(score => 
+                            `<td>${score !== null ? score : '-'}</td>`
+                        ).join('')}
+                        <td class="total-col">${total}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function updateScoreInputs() {
+            const container = document.getElementById('scoreInputs');
+            
+            if (currentRound > maxRounds) {
+                container.innerHTML = '<p style="text-align: center; color: #667eea; font-weight: 600;">Game Complete!</p>';
+                return;
+            }
+            
+            container.innerHTML = players.map((player, index) => `
+                <div class="score-item">
+                    <label>${player}</label>
+                    <input type="number" 
+                           id="score-${index}" 
+                           min="0" 
+                           value="${scores[index][currentRound - 1] ?? ''}"
+                           placeholder="0" />
+                </div>
+            `).join('');
+        }
+
+        function submitRound() {
+            if (currentRound > maxRounds) {
+                alert('Game is already complete!');
+                return;
+            }
+            
+            // Collect scores
+            let allFilled = true;
+            players.forEach((_, index) => {
+                const input = document.getElementById(`score-${index}`);
+                const value = input.value.trim();
+                
+                if (value === '') {
+                    allFilled = false;
+                } else {
+                    scores[index][currentRound - 1] = parseInt(value);
+                }
+            });
+            
+            if (!allFilled) {
+                if (!confirm('Some scores are missing. Continue anyway?')) {
+                    return;
+                }
+                
+                // Set missing scores to 0
+                players.forEach((_, index) => {
+                    if (scores[index][currentRound - 1] === null) {
+                        scores[index][currentRound - 1] = 0;
+                    }
+                });
+            }
+            
+            currentRound++;
+            updateScoreTable();
+            updateScoreInputs();
+            updateRoundInfo();
+            
+            if (currentRound > maxRounds) {
+                announceWinner();
+            }
+        }
+
+        function undoLastRound() {
+            if (currentRound === 1) {
+                alert('No rounds to undo');
+                return;
+            }
+            
+            if (!confirm('Undo the last round?')) {
+                return;
+            }
+            
+            currentRound--;
+            players.forEach((_, index) => {
+                scores[index][currentRound - 1] = null;
+            });
+            
+            updateScoreTable();
+            updateScoreInputs();
+            updateRoundInfo();
+        }
+
+        function resetGame() {
+            if (!confirm('Start a new game? All scores will be lost.')) {
+                return;
+            }
+            
+            players = [];
+            scores = [];
+            currentRound = 1;
+            
+            document.getElementById('setupSection').classList.remove('hidden');
+            document.getElementById('gameSection').classList.add('hidden');
+            document.getElementById('playerNameInput').value = '';
+            updatePlayerList();
+        }
+
+        function announceWinner() {
+            const totals = players.map((_, i) => 
+                scores[i].reduce((sum, score) => sum + (score !== null ? score : 0), 0)
+            );
+            
+            const minScore = Math.min(...totals);
+            const winnerIndex = totals.indexOf(minScore);
+            
+            setTimeout(() => {
+                alert(`🎉 ${players[winnerIndex]} wins with ${minScore} points!`);
+            }, 300);
+        }
+
+        // Allow Enter key to add players
+        document.getElementById('playerNameInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                addPlayer();
+            }
+        });
+
+        // Initialize
+        updatePlayerList();
+    </script>
+</body>
+</html>
