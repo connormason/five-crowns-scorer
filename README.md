@@ -1,6 +1,9 @@
+**NOTE**: using this as a Claude Code playground
+
 # Five Crowns Scorer
 
-A modern, feature-rich web application for scoring the card game Five Crowns. Built with vanilla JavaScript, CSS, and HTML - no frameworks or build tools required.
+A modern, feature-rich web application for scoring the card game Five Crowns. 
+Built with vanilla JavaScript, CSS, and HTML - no frameworks or build tools required.
 
 ## Features
 
