@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Five Crowns Scorer - Test Runner</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        #results {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .summary {
+            text-align: center;
+        }
+
+        .summary h2 {
+            margin-bottom: 1.5rem;
+            font-size: 1.75rem;
+        }
+
+        .summary.success h2 {
+            color: #10b981;
+        }
+
+        .summary.failure h2 {
+            color: #ef4444;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat {
+            background: #f5f5f5;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .stat .label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat .value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .stat .value.passed {
+            color: #10b981;
+        }
+
+        .stat .value.failed {
+            color: #ef4444;
+        }
+
+        .note {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #f9fafb;
+            border-radius: 0.5rem;
+            border-left: 4px solid #667eea;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .instructions {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-top: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .instructions h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .instructions code {
+            background: #f5f5f5;
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.25rem;
+            font-family: 'Courier New', monospace;
+        }
+
+        .instructions pre {
+            background: #2d2d44;
+            color: #e0e0e0;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+
+        .instructions pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧪 Five Crowns Scorer - Test Suite</h1>
+            <p class="subtitle">Automated Unit Testing</p>
+        </div>
+
+        <div id="results">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Running tests...</p>
+            </div>
+        </div>
+
+        <div class="instructions">
+            <h3>Running Tests</h3>
+            <p>Tests are automatically executed when this page loads. Check the browser console for detailed output.</p>
+
+            <h4 style="margin-top: 1.5rem; color: #667eea;">Command Line</h4>
+            <p>Run tests from the command line using:</p>
+            <pre><code>make test-unit    # Run unit tests in browser
+make test         # Run all tests (unit + lint + validate)</code></pre>
+
+            <h4 style="margin-top: 1.5rem; color: #667eea;">Test Coverage</h4>
+            <ul style="margin-left: 1.5rem; line-height: 1.8;">
+                <li><strong>storage.test.js</strong> - LocalStorage persistence</li>
+                <li><strong>game.test.js</strong> - Game logic and state management</li>
+                <li><strong>statistics.test.js</strong> - Game history and player stats</li>
+            </ul>
+
+            <h4 style="margin-top: 1.5rem; color: #667eea;">Test Framework</h4>
+            <p>This project uses a custom zero-dependency test framework with assertion methods similar to popular testing libraries. No external dependencies required!</p>
+        </div>
+    </div>
+
+    <!-- Load test runner as ES6 module -->
+    <script type="module" src="test-runner.js"></script>
+</body>
+</html>

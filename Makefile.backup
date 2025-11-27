@@ -1,4 +1,4 @@
-.PHONY: help dev test test-unit lint validate deploy clean status
+.PHONY: help dev test lint validate deploy clean status
 
 # Default target
 help:
@@ -6,8 +6,7 @@ help:
 	@echo ""
 	@echo "Available commands:"
 	@echo "  make dev        - Start local development server"
-	@echo "  make test       - Run all tests (lint + validate)"
-	@echo "  make test-unit  - Run unit tests in browser"
+	@echo "  make test       - Run syntax validation and checks"
 	@echo "  make lint       - Check JavaScript syntax"
 	@echo "  make validate   - Validate HTML and file structure"
 	@echo "  make deploy     - Deploy to GitHub Pages"
@@ -24,18 +23,7 @@ dev:
 
 # Run tests
 test: lint validate
-	@echo "✓ All tests passed!"
-	@echo ""
-	@echo "To run unit tests, use: make test-unit"
-
-# Run unit tests in browser
-test-unit:
-	@echo "Opening unit tests in browser..."
-	@echo "Tests will run automatically. Check browser console for details."
-	@echo ""
-	@echo "Visit: http://localhost:8000/tests/"
-	@echo ""
-	@python3 -m http.server 8000
+	@echo " All tests passed!"
 
 # Lint JavaScript files
 lint:
@@ -45,35 +33,33 @@ lint:
 	@node -c js/ui.js || exit 1
 	@node -c js/statistics.js || exit 1
 	@node -c js/app.js || exit 1
-	@echo "✓ JavaScript syntax OK"
+	@echo " JavaScript syntax OK"
 
 # Validate project structure
 validate:
 	@echo "Validating project structure..."
-	@test -f index.html || (echo "✗ index.html missing" && exit 1)
-	@test -f css/styles.css || (echo "✗ css/styles.css missing" && exit 1)
-	@test -f js/app.js || (echo "✗ js/app.js missing" && exit 1)
-	@test -f js/game.js || (echo "✗ js/game.js missing" && exit 1)
-	@test -f js/ui.js || (echo "✗ js/ui.js missing" && exit 1)
-	@test -f js/storage.js || (echo "✗ js/storage.js missing" && exit 1)
-	@test -f js/statistics.js || (echo "✗ js/statistics.js missing" && exit 1)
-	@test -f README.md || (echo "✗ README.md missing" && exit 1)
-	@test -d tests || (echo "✗ tests directory missing" && exit 1)
-	@test -f tests/test-framework.js || (echo "✗ test framework missing" && exit 1)
-	@echo "✓ Project structure OK"
+	@test -f index.html || (echo " index.html missing" && exit 1)
+	@test -f css/styles.css || (echo " css/styles.css missing" && exit 1)
+	@test -f js/app.js || (echo " js/app.js missing" && exit 1)
+	@test -f js/game.js || (echo " js/game.js missing" && exit 1)
+	@test -f js/ui.js || (echo " js/ui.js missing" && exit 1)
+	@test -f js/storage.js || (echo " js/storage.js missing" && exit 1)
+	@test -f js/statistics.js || (echo " js/statistics.js missing" && exit 1)
+	@test -f README.md || (echo " README.md missing" && exit 1)
+	@echo " Project structure OK"
 
 # Deploy to GitHub Pages
 deploy:
 	@echo "Deploying to GitHub Pages..."
 	@if [ -n "$$(git status --porcelain)" ]; then \
-		echo "✗ Working directory not clean. Commit changes first."; \
+		echo " Working directory not clean. Commit changes first."; \
 		exit 1; \
 	fi
 	@echo "Running tests before deploy..."
 	@make test
 	@echo "Pushing to GitHub..."
 	@git push origin main
-	@echo "✓ Deployed! Your site will be live in a few minutes."
+	@echo " Deployed! Your site will be live in a few minutes."
 	@echo "  Visit: https://$$(git config --get remote.origin.url | sed 's/.*github.com[:/]\(.*\)\.git/\1/' | sed 's/\// /g' | awk '{print $$1".github.io/"$$2}')"
 
 # Clean temporary files
@@ -82,8 +68,7 @@ clean:
 	@find . -name ".DS_Store" -delete
 	@find . -name "*.tmp" -delete
 	@find . -name "*.log" -delete
-	@rm -f .server.pid
-	@echo "✓ Clean complete"
+	@echo " Clean complete"
 
 # Show project status
 status:
@@ -106,8 +91,8 @@ backup:
 	@echo "Creating backup..."
 	@mkdir -p backups
 	@BACKUP_FILE="backups/five-crowns-backup-$$(date +%Y%m%d-%H%M%S).tar.gz"; \
-	tar -czf "$$BACKUP_FILE" index.html css/ js/ tests/ README.md CLAUDE.md; \
-	echo "✓ Backup created: $$BACKUP_FILE"
+	tar -czf "$$BACKUP_FILE" index.html css/ js/ README.md CLAUDE.md; \
+	echo " Backup created: $$BACKUP_FILE"
 
 # Quick commit and push (use with care)
 quick-push:
@@ -121,11 +106,9 @@ loc:
 	@echo "Lines of Code:"
 	@echo "JavaScript:"
 	@wc -l js/*.js | tail -1
-	@echo "Tests:"
-	@wc -l tests/*.js | tail -1
 	@echo "CSS:"
 	@wc -l css/*.css
 	@echo "HTML:"
 	@wc -l index.html
 	@echo "Total:"
-	@wc -l css/*.css js/*.js tests/*.js index.html | tail -1
+	@wc -l css/*.css js/*.js index.html | tail -1
