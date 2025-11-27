@@ -208,6 +208,64 @@ export class Game {
 
     /**
      * Export game state as JSON
+     * @returns {string} JSON string
+     */
+    exportToJSON() {
+        const exportData = {
+            version: '1.0',
+            exportDate: new Date().toISOString(),
+            game: this.exportState()
+        };
+        return JSON.stringify(exportData, null, 2);
+    }
+
+    /**
+     * Import game state from JSON
+     * @param {string} jsonData - JSON string
+     * @returns {boolean} Success status
+     */
+    importFromJSON(jsonData) {
+        try {
+            const imported = JSON.parse(jsonData);
+
+            // Validate structure
+            if (!imported.game || !imported.game.players || !imported.game.scores) {
+                throw new Error('Invalid game data format');
+            }
+
+            const game = imported.game;
+
+            // Validate data integrity
+            if (!Array.isArray(game.players) || game.players.length < 2) {
+                throw new Error('Invalid players data');
+            }
+
+            if (!Array.isArray(game.scores) || game.scores.length !== game.players.length) {
+                throw new Error('Scores data does not match players');
+            }
+
+            // Validate each player's scores
+            game.scores.forEach((playerScores, index) => {
+                if (!Array.isArray(playerScores) || playerScores.length !== this.maxRounds) {
+                    throw new Error(`Invalid scores for player ${game.players[index]}`);
+                }
+            });
+
+            // Import data
+            this.players = game.players;
+            this.scores = game.scores;
+            this.currentRound = game.currentRound || 1;
+
+            this.saveState();
+            return true;
+        } catch (error) {
+            console.error('Failed to import game:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Export game state as JSON
      * @returns {Object}
      */
     exportState() {

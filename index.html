@@ -12,8 +12,16 @@
     <div class="container">
         <!-- Header -->
         <div class="header">
-            <h1><� Five Crowns Scorer</h1>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle dark mode">🌙</button>
+            <h1>🃏 Five Crowns Scorer</h1>
             <div class="round-info" id="roundInfo">Setup Game</div>
+
+            <!-- Menu controls (show when in setup) -->
+            <div class="menu-controls" id="menuControls">
+                <button class="btn-secondary" data-action="view-stats">📊 Stats</button>
+                <button class="btn-secondary" data-action="export-game">💾 Export</button>
+                <button class="btn-secondary" data-action="import-game">📁 Import</button>
+            </div>
         </div>
 
         <!-- Setup Section -->
@@ -62,6 +70,41 @@
                     <button class="btn-secondary" data-action="undo-round">Undo Last</button>
                     <button class="btn-danger" data-action="reset-game">New Game</button>
                 </div>
+                <div class="menu-controls" style="margin-top: 1rem;">
+                    <button class="btn-secondary" data-action="view-stats">📊 Stats</button>
+                    <button class="btn-secondary" data-action="export-game">💾 Export</button>
+                    <button class="btn-secondary" data-action="import-game">📁 Import</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics Section -->
+        <div id="statsSection" class="stats-view hidden">
+            <h2>Statistics & History</h2>
+            <div id="statsContent"></div>
+            <div class="controls" style="margin-top: 1.5rem;">
+                <button class="btn-primary" data-action="back-to-game">Back to Game</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import Modal -->
+    <div id="importModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Import Game</h2>
+                <button class="modal-close" data-action="close-import">×</button>
+            </div>
+            <div class="file-input-wrapper">
+                <label for="importFileInput">Select a game file to import:</label>
+                <input type="file" id="importFileInput" accept=".json" />
+            </div>
+            <p style="color: var(--text-secondary); margin: 1rem 0; font-size: 0.9rem;">
+                Import a previously exported Five Crowns game file. This will replace your current game.
+            </p>
+            <div class="controls">
+                <button class="btn-primary" data-action="confirm-import">Import</button>
+                <button class="btn-secondary" data-action="close-import">Cancel</button>
             </div>
         </div>
     </div>

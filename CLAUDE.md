@@ -47,23 +47,42 @@ five-crowns-scorer/
 
 **Application Entry** (js/app.js):
 - `FiveCrownsApp` class coordinates everything
+- Integrates Game, UI, and Statistics modules
 - Event delegation for dynamic elements
 - Handles user interactions and error messages
 - Checks for saved games on startup
+- Export/import functionality
+- Dark mode support
+
+**Statistics & History** (js/statistics.js):
+- Tracks completed games (last 50)
+- Player statistics (wins, win rate, scores)
+- Overall game statistics
+- Export/import game history
+- localStorage persistence
 
 ## Development
 
 **Running the Application**:
-Open `index.html` in any modern web browser with ES6 module support. No build process or dependencies required.
+```bash
+make dev  # Start local server at http://localhost:8000
+```
+Or open `index.html` in any modern browser with ES6 module support. No build process or dependencies required.
 
 **Testing Changes**:
-1. Edit the appropriate module (game.js, ui.js, storage.js, or app.js)
-2. Refresh the browser to see changes
-3. Use browser DevTools to debug
-4. Test on multiple browsers and devices
+```bash
+make test      # Run all tests
+make lint      # Check JavaScript syntax
+make validate  # Verify project structure
+```
+
+**Deployment**:
+```bash
+make deploy  # Deploy to GitHub Pages
+```
 
 **State Management**:
-Game state is automatically saved to localStorage after each action. Users can close/refresh the browser and continue their game.
+Game state is automatically saved to localStorage after each action. Users can close/refresh the browser and continue their game. Completed games are saved to history automatically.
 
 ## Key Classes and Methods
 
@@ -89,6 +108,49 @@ Game state is automatically saved to localStorage after each action. Users can c
 - `load()`: Load from localStorage
 - `clear()`: Remove saved data
 - `hasSavedGame()`: Check for existing save
+
+**Statistics Class** (js/statistics.js):
+- `saveGame(gameState)`: Save completed game to history
+- `getHistory()`: Get all game records
+- `getPlayerStats(playerName)`: Get stats for specific player
+- `getAllPlayers()`: Get unique player names
+- `getOverallStats()`: Get aggregate statistics
+- `getRecentGames(limit)`: Get recent games
+- `exportHistory()`: Export history as JSON
+- `importHistory(jsonData)`: Import history from JSON
+
+**UI Class** (js/ui.js):
+- `toggleTheme()`: Switch between light/dark mode
+- `showStats()`: Display statistics view
+- `updateStatsView()`: Render statistics data
+- `showImportModal()` / `hideImportModal()`: Control import dialog
+- `downloadJSON(data, filename)`: Trigger file download
+
+## New Features (Added)
+
+**Dark Mode**:
+- CSS variables for theming
+- Toggle button in header
+- Preference saved to localStorage
+- Smooth transitions
+
+**Statistics & History**:
+- Automatic game history tracking (last 50 games)
+- Per-player statistics (wins, win rate, average score)
+- Overall statistics (best player, total games)
+- Recent game history view
+
+**Export/Import**:
+- Export game as JSON file
+- Import previously exported games
+- Data validation on import
+- Versioned export format
+
+**Makefile**:
+- `make dev`: Start local server
+- `make test`: Run tests
+- `make deploy`: Deploy to GitHub Pages
+- `make lint`, `make validate`, `make clean`, etc.
 
 ## Extensibility
 

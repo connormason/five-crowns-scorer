@@ -5,11 +5,13 @@
 
 import { Game } from './game.js';
 import { UI } from './ui.js';
+import { Statistics } from './statistics.js';
 
 class FiveCrownsApp {
     constructor() {
         this.game = new Game();
-        this.ui = new UI(this.game);
+        this.statistics = new Statistics();
+        this.ui = new UI(this.game, this.statistics);
         this.setupEventListeners();
         this.checkForSavedGame();
     }
@@ -35,13 +37,18 @@ class FiveCrownsApp {
      * Set up all event listeners
      */
     setupEventListeners() {
+        // Theme toggle
+        document.getElementById('themeToggle')?.addEventListener('click', () => {
+            this.ui.toggleTheme();
+        });
+
         // Add player button
         document.querySelector('[data-action="add-player"]')?.addEventListener('click', () => {
             this.handleAddPlayer();
         });
 
         // Player name input - Enter key
-        this.ui.elements.playerNameInput.addEventListener('keypress', (e) => {
+        this.ui.elements.playerNameInput?.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 this.handleAddPlayer();
             }
@@ -67,11 +74,52 @@ class FiveCrownsApp {
             this.handleResetGame();
         });
 
+        // View statistics
+        document.querySelector('[data-action="view-stats"]')?.addEventListener('click', () => {
+            this.ui.showStats();
+        });
+
+        // Export game
+        document.querySelector('[data-action="export-game"]')?.addEventListener('click', () => {
+            this.handleExportGame();
+        });
+
+        // Import game
+        document.querySelector('[data-action="import-game"]')?.addEventListener('click', () => {
+            this.ui.showImportModal();
+        });
+
+        // Import modal controls
+        document.querySelector('[data-action="close-import"]')?.addEventListener('click', () => {
+            this.ui.hideImportModal();
+        });
+
+        document.querySelector('[data-action="confirm-import"]')?.addEventListener('click', () => {
+            this.handleImportGame();
+        });
+
+        // Back to game button
+        document.querySelector('[data-action="back-to-game"]')?.addEventListener('click', () => {
+            if (this.game.players.length > 0) {
+                this.ui.showGame();
+                this.ui.updateAll();
+            } else {
+                this.ui.showSetup();
+            }
+        });
+
         // Event delegation for remove player buttons
-        this.ui.elements.playerList.addEventListener('click', (e) => {
+        this.ui.elements.playerList?.addEventListener('click', (e) => {
             if (e.target.hasAttribute('data-remove-player')) {
                 const index = parseInt(e.target.getAttribute('data-remove-player'), 10);
                 this.handleRemovePlayer(index);
+            }
+        });
+
+        // Close modal when clicking outside
+        this.ui.elements.importModal?.addEventListener('click', (e) => {
+            if (e.target === this.ui.elements.importModal) {
+                this.ui.hideImportModal();
             }
         });
     }
@@ -147,6 +195,9 @@ class FiveCrownsApp {
             this.ui.updateAll();
 
             if (gameComplete) {
+                // Save to history
+                this.statistics.saveGame(this.game.exportState());
+
                 const winner = this.game.getWinner();
                 this.ui.announceWinner(winner);
             }
@@ -188,6 +239,53 @@ class FiveCrownsApp {
         this.ui.showSetup();
         this.ui.clearPlayerInput();
         this.ui.updatePlayerList();
+    }
+
+    /**
+     * Handle exporting game data
+     */
+    handleExportGame() {
+        try {
+            const jsonData = this.game.exportToJSON();
+            const filename = `five-crowns-game-${new Date().toISOString().split('T')[0]}.json`;
+            this.ui.downloadJSON(jsonData, filename);
+        } catch (error) {
+            this.ui.showError('Failed to export game: ' + error.message);
+        }
+    }
+
+    /**
+     * Handle importing game data
+     */
+    handleImportGame() {
+        const fileInput = this.ui.elements.importFileInput;
+
+        if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+            this.ui.showError('Please select a file to import');
+            return;
+        }
+
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+            try {
+                const jsonData = e.target.result;
+                this.game.importFromJSON(jsonData);
+                this.ui.hideImportModal();
+                this.ui.showGame();
+                this.ui.updateAll();
+                alert('Game imported successfully!');
+            } catch (error) {
+                this.ui.showError('Failed to import game: ' + error.message);
+            }
+        };
+
+        reader.onerror = () => {
+            this.ui.showError('Failed to read file');
+        };
+
+        reader.readAsText(file);
     }
 }
 
