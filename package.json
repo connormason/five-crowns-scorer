@@ -1,0 +1,16 @@
+{
+  "name": "five-crowns-scorer-tests",
+  "version": "1.0.0",
+  "description": "Puppeteer tests for Five Crowns Scorer",
+  "private": true,
+  "scripts": {
+    "test:puppeteer": "node tests/puppeteer/run-tests.js",
+    "test:puppeteer:headed": "node tests/puppeteer/run-tests.js --headed"
+  },
+  "devDependencies": {
+    "puppeteer": "^24.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

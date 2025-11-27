@@ -1,19 +1,22 @@
-.PHONY: help dev test test-unit lint validate deploy clean status
+.PHONY: help dev test test-unit test-puppeteer test-e2e setup lint validate deploy clean status
 
 # Default target
 help:
 	@echo "Five Crowns Scorer - Development Makefile"
 	@echo ""
 	@echo "Available commands:"
-	@echo "  make dev        - Start local development server"
-	@echo "  make test       - Run all tests (lint + validate)"
-	@echo "  make test-unit  - Run unit tests in browser"
-	@echo "  make lint       - Check JavaScript syntax"
-	@echo "  make validate   - Validate HTML and file structure"
-	@echo "  make deploy     - Deploy to GitHub Pages"
-	@echo "  make clean      - Clean temporary files"
-	@echo "  make status     - Show git and project status"
-	@echo "  make backup     - Create backup of game data"
+	@echo "  make dev            - Start local development server"
+	@echo "  make test           - Run all tests (lint + validate)"
+	@echo "  make test-unit      - Run unit tests in browser"
+	@echo "  make test-puppeteer - Run Puppeteer E2E tests (headless)"
+	@echo "  make test-e2e       - Alias for test-puppeteer"
+	@echo "  make setup          - Install test dependencies"
+	@echo "  make lint           - Check JavaScript syntax"
+	@echo "  make validate       - Validate HTML and file structure"
+	@echo "  make deploy         - Deploy to GitHub Pages"
+	@echo "  make clean          - Clean temporary files"
+	@echo "  make status         - Show git and project status"
+	@echo "  make backup         - Create backup of game data"
 	@echo ""
 
 # Start local development server
@@ -36,6 +39,24 @@ test-unit:
 	@echo "Visit: http://localhost:8000/tests/"
 	@echo ""
 	@python3 -m http.server 8000
+
+# Run Puppeteer E2E tests
+test-puppeteer:
+	@echo "Running Puppeteer E2E tests..."
+	@if [ ! -d "node_modules" ]; then \
+		echo "Dependencies not installed. Run 'make setup' first."; \
+		exit 1; \
+	fi
+	@npm run test:puppeteer
+
+# Alias for Puppeteer tests
+test-e2e: test-puppeteer
+
+# Install test dependencies
+setup:
+	@echo "Installing test dependencies..."
+	@npm install
+	@echo "✓ Setup complete"
 
 # Lint JavaScript files
 lint:
