@@ -5,7 +5,8 @@
   "private": true,
   "scripts": {
     "test:puppeteer": "node tests/puppeteer/run-tests.js",
-    "test:puppeteer:headed": "node tests/puppeteer/run-tests.js --headed"
+    "test:puppeteer:headed": "node tests/puppeteer/run-tests.js --headed",
+    "postinstall": "node node_modules/puppeteer/install.mjs || echo 'Browser download skipped'"
   },
   "devDependencies": {
     "puppeteer": "^24.0.0"

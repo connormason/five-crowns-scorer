@@ -49,8 +49,11 @@ async function runAllTests() {
   console.log('\nLaunching browser...');
   const browser = await puppeteer.launch({
     headless: true, // Set to false to see tests running
-    args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+    args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage'
+    ]
   });
 
   try {

@@ -1,4 +1,4 @@
-.PHONY: help dev test test-unit test-puppeteer test-e2e setup lint validate deploy clean status
+.PHONY: help dev test test-unit test-puppeteer test-e2e setup lint validate deploy clean status install-hooks check-hooks
 
 # Default target
 help:
@@ -17,6 +17,9 @@ help:
 	@echo "  make clean          - Clean temporary files"
 	@echo "  make status         - Show git and project status"
 	@echo "  make backup         - Create backup of game data"
+	@echo "  make install-hooks  - Install/reinstall Git hooks"
+	@echo "  make check-hooks    - Verify Git hooks are installed"
+	@echo "  make loc            - Count lines of code"
 	@echo ""
 
 # Start local development server
@@ -150,3 +153,45 @@ loc:
 	@wc -l index.html
 	@echo "Total:"
 	@wc -l css/*.css js/*.js tests/*.js index.html | tail -1
+
+# Install Git hooks
+install-hooks:
+	@echo "Installing Git hooks..."
+	@chmod +x .git/hooks/pre-commit 2>/dev/null || echo "⚠️  pre-commit hook not found"
+	@chmod +x .git/hooks/pre-push 2>/dev/null || echo "⚠️  pre-push hook not found"
+	@chmod +x .git/hooks/commit-msg 2>/dev/null || echo "⚠️  commit-msg hook not found"
+	@if [ -f .git/hooks/pre-commit ] && [ -f .git/hooks/pre-push ] && [ -f .git/hooks/commit-msg ]; then \
+		echo "✓ Git hooks installed and executable"; \
+		echo ""; \
+		echo "Installed hooks:"; \
+		echo "  • pre-commit  - Runs lint, validate, and optional E2E tests"; \
+		echo "  • pre-push    - Runs full test suite before pushing"; \
+		echo "  • commit-msg  - Validates commit message quality"; \
+		echo ""; \
+		echo "See .githooks-README.md for details"; \
+	else \
+		echo "✗ Some hooks are missing. Please ensure hooks are in .git/hooks/"; \
+		exit 1; \
+	fi
+
+# Check if Git hooks are installed and working
+check-hooks:
+	@echo "Checking Git hooks status..."
+	@echo ""
+	@if [ -x .git/hooks/pre-commit ]; then \
+		echo "✓ pre-commit hook installed and executable"; \
+	else \
+		echo "✗ pre-commit hook missing or not executable"; \
+	fi
+	@if [ -x .git/hooks/pre-push ]; then \
+		echo "✓ pre-push hook installed and executable"; \
+	else \
+		echo "✗ pre-push hook missing or not executable"; \
+	fi
+	@if [ -x .git/hooks/commit-msg ]; then \
+		echo "✓ commit-msg hook installed and executable"; \
+	else \
+		echo "✗ commit-msg hook missing or not executable"; \
+	fi
+	@echo ""
+	@echo "To install hooks, run: make install-hooks"
